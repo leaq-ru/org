@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: org
+  labels:
+    app: org
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: org
+  template:
+    metadata:
+      labels:
+        app: org
+      annotations:
+        linkerd.io/inject: enabled
+        config.linkerd.io/proxy-cpu-request: 100m
+        config.linkerd.io/proxy-memory-request: 25Mi
+        config.linkerd.io/skip-outbound-ports: "4222"
+    spec:
+      imagePullSecrets:
+        - name: ghcr
+      containers:
+        - name: org
+          image: busybox
+          command:
+            - /app/servicebin
+          livenessProbe:
+            exec:
+              command:
+                - /app/grpc_health_probe
+                - -addr=:8080
+          readinessProbe:
+            exec:
+              command:
+                - /app/grpc_health_probe
+                - -addr=:8080
+          ports:
+            - containerPort: 8080
+              name: grpc
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 150m
+              memory: 50Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          env:
+            - name: GRPC_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: port
+                  name: grpc
+            - name: MONGODB_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: url
+                  name: mongodb
+            - name: STAN_CLUSTERID
+              valueFrom:
+                configMapKeyRef:
+                  key: clusterid
+                  name: stan
+            - name: NATS_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: url
+                  name: nats
+            - name: LOGLEVEL
+              value: error
