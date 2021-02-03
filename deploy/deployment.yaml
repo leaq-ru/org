@@ -15,7 +15,7 @@ spec:
         app: org
       annotations:
         linkerd.io/inject: enabled
-        config.linkerd.io/proxy-cpu-request: 100m
+        config.linkerd.io/proxy-cpu-request: 25m
         config.linkerd.io/proxy-memory-request: 25Mi
         config.linkerd.io/skip-outbound-ports: "4222"
     spec:
@@ -42,8 +42,8 @@ spec:
               protocol: TCP
           resources:
             requests:
-              cpu: 150m
-              memory: 50Mi
+              cpu: 25m
+              memory: 25Mi
             limits:
               cpu: "1"
               memory: 1Gi
@@ -68,5 +68,10 @@ spec:
                 configMapKeyRef:
                   key: url
                   name: nats
+            - name: DADATA_TOKENS
+              valueFrom:
+                secretKeyRef:
+                  key: tokens
+                  name: dadata
             - name: LOGLEVEL
               value: error

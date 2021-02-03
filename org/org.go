@@ -13,6 +13,7 @@ type org struct {
 	LocationID       primitive.ObjectID   `bson:"l,omitempty"`
 	ManagerID        primitive.ObjectID   `bson:"mi,omitempty"`
 	ManagerPost      string               `bson:"mp,omitempty"`
+	EmployeeCount    uint32               `bson:"e,omitempty"`
 	OkvedOsnID       primitive.ObjectID   `bson:"o,omitempty"`
 	OkvedDopIDs      []primitive.ObjectID `bson:"od,omitempty"`
 	Metros           []metro              `bson:"m,omitempty"`

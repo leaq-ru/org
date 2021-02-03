@@ -5,6 +5,7 @@ import (
 	graceful "github.com/nnqq/scr-lib-graceful"
 	"github.com/nnqq/scr-org/config"
 	"github.com/nnqq/scr-org/consumer"
+	"github.com/nnqq/scr-org/dadata"
 	"github.com/nnqq/scr-org/logger"
 	"github.com/nnqq/scr-org/mongo"
 	"github.com/nnqq/scr-org/stan"
@@ -40,6 +41,7 @@ func main() {
 		logg.ZL,
 		stanConn,
 		cfg.ServiceName,
+		dadata.NewTokenPool(strings.Split(cfg.DaData.Tokens, ","), db),
 	)
 	logg.Must(cons.Subscribe())
 
