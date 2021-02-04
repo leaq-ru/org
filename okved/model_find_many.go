@@ -14,7 +14,7 @@ type Upsert struct {
 	Code         string
 	Name         string
 	CodeWithName string
-	Kind         kind
+	Kind         string
 }
 
 func (m Model) FindMany(
@@ -45,7 +45,7 @@ func (m Model) FindMany(
 					Code:         val.Code,
 					Name:         val.Name,
 					CodeWithName: val.CodeWithName,
-					Kind:         val.Kind,
+					Kind:         toKind(val.Kind),
 				},
 			}, options.Update().SetUpsert(true))
 			if e != nil {
@@ -71,4 +71,15 @@ func (m Model) FindMany(
 	}
 	err = eg.Wait()
 	return
+}
+
+func toKind(in string) kind {
+	switch in {
+	case "2001":
+		return kind_y2001
+	case "2004":
+		return kind_y2004
+	default:
+		return 0
+	}
 }
