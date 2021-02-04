@@ -10,13 +10,13 @@ func NewConsumer(
 	logger zerolog.Logger,
 	stanConn stan.Conn,
 	serviceName string,
-	tokenPool dadata.TokenPool,
+	dadataClient dadata.Client,
 ) Consumer {
 	return Consumer{
-		logger:      logger,
-		stanConn:    stanConn,
-		serviceName: serviceName,
-		tokenPool:   tokenPool,
+		logger:       logger,
+		stanConn:     stanConn,
+		serviceName:  serviceName,
+		dadataClient: dadataClient,
 		state: &state{
 			done: make(chan struct{}),
 		},

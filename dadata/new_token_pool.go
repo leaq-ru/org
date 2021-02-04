@@ -5,8 +5,8 @@ import (
 	md "go.mongodb.org/mongo-driver/mongo"
 )
 
-func NewTokenPool(tokens []string, db *md.Database) TokenPool {
-	return TokenPool{
+func newTokenPool(tokens []string, db *md.Database) tokenPool {
+	return tokenPool{
 		tokens: tokens,
 		coll:   db.Collection(mongo.CollDaDataToken),
 	}

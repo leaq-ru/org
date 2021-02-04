@@ -17,6 +17,6 @@ type kind uint8
 
 const (
 	_ kind = iota
-	kind_city
-	kind_settlement
+	Kind_city
+	Kind_settlement
 )

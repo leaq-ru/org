@@ -2,7 +2,7 @@ package dadata
 
 import "go.mongodb.org/mongo-driver/mongo"
 
-type TokenPool struct {
+type tokenPool struct {
 	tokens []string
 	coll   *mongo.Collection
 }

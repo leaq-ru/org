@@ -14,7 +14,7 @@ const dailyLimitPerToken = 10000
 
 var ErrNoFreeTokens = errors.New("no tokens which not exceeded daily limit")
 
-func (t TokenPool) Get(ctx context.Context) (tok string, err error) {
+func (t tokenPool) Get(ctx context.Context) (tok string, err error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 

@@ -12,6 +12,7 @@ require (
 	github.com/nnqq/scr-org-producer v1.0.0
 	github.com/nnqq/scr-proto v1.20.0
 	github.com/rs/zerolog v1.20.0
+	github.com/valyala/fasthttp v1.19.0
 	go.mongodb.org/mongo-driver v1.4.6
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 	google.golang.org/grpc v1.35.0

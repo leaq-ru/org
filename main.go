@@ -41,7 +41,7 @@ func main() {
 		logg.ZL,
 		stanConn,
 		cfg.ServiceName,
-		dadata.NewTokenPool(strings.Split(cfg.DaData.Tokens, ","), db),
+		dadata.NewClient(strings.Split(cfg.DaData.Tokens, ","), db),
 	)
 	logg.Must(cons.Subscribe())
 

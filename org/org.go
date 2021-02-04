@@ -16,7 +16,7 @@ type org struct {
 	EmployeeCount    uint32               `bson:"e,omitempty"`
 	OkvedOsnID       primitive.ObjectID   `bson:"o,omitempty"`
 	OkvedDopIDs      []primitive.ObjectID `bson:"od,omitempty"`
-	Metros           []metro              `bson:"m,omitempty"`
+	Metros           []Metro              `bson:"m,omitempty"`
 	Name             string               `bson:"n,omitempty"`
 	NameFullWithOPF  string               `bson:"nf,omitempty"`
 	NameShortWithOPF string               `bson:"ns,omitempty"`
@@ -42,7 +42,7 @@ type org struct {
 	UpdatedAt        time.Time            `bson:"ua,omitempty"`
 }
 
-type metro struct {
+type Metro struct {
 	ID       primitive.ObjectID `bson:"id,omitempty"`
 	Distance float32            `bson:"d,omitempty"`
 }

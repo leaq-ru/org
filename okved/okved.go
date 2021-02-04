@@ -15,6 +15,6 @@ type kind uint8
 
 const (
 	_ kind = iota
-	kind_y2001
-	kind_y2004
+	Kind_y2001
+	Kind_y2004
 )

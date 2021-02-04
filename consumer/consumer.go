@@ -14,9 +14,9 @@ type state struct {
 }
 
 type Consumer struct {
-	logger      zerolog.Logger
-	stanConn    stan.Conn
-	serviceName string
-	tokenPool   dadata.TokenPool
-	state       *state
+	logger       zerolog.Logger
+	stanConn     stan.Conn
+	serviceName  string
+	dadataClient dadata.Client
+	state        *state
 }

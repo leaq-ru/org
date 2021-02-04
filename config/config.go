@@ -6,7 +6,7 @@ type Config struct {
 	MongoDB     mongodb
 	STAN        stan
 	NATS        nats
-	DaData      daData
+	DaData      dadata
 	LogLevel    string `envconfig:"LOGLEVEL"`
 }
 
@@ -26,6 +26,6 @@ type nats struct {
 	URL string `envconfig:"NATS_URL"`
 }
 
-type daData struct {
+type dadata struct {
 	Tokens string `envconfig:"DADATA_TOKENS"`
 }
