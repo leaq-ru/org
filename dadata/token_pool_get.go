@@ -56,7 +56,7 @@ func (t tokenPool) Get(ctx context.Context) (tok string, err error) {
 	}
 
 	// to not flood dadata.ru
-	time.Sleep(75 * time.Millisecond)
+	time.Sleep(time.Second)
 	tok = doc.Value
 	return
 }
