@@ -15,9 +15,9 @@ spec:
         app: org
       annotations:
         linkerd.io/inject: enabled
-        config.linkerd.io/proxy-cpu-request: 25m
-        config.linkerd.io/proxy-memory-request: 25Mi
-        config.linkerd.io/skip-outbound-ports: "4222"
+        config.linkerd.io/proxy-cpu-request: 15m
+        config.linkerd.io/proxy-memory-request: 15Mi
+        config.linkerd.io/skip-outbound-ports: "4222,80,433"
     spec:
       imagePullSecrets:
         - name: ghcr
@@ -42,7 +42,7 @@ spec:
               protocol: TCP
           resources:
             requests:
-              cpu: 25m
+              cpu: 100m
               memory: 25Mi
             limits:
               cpu: "1"
