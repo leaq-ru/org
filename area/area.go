@@ -8,15 +8,15 @@ type area struct {
 	FiasID   string             `bson:"fi,omitempty"`
 	KladrID  string             `bson:"ki,omitempty"`
 	Name     string             `bson:"n,omitempty"`
-	Kind     kind               `bson:"k,omitempty"`
+	Kind     Kind               `bson:"k,omitempty"`
 	Type     string             `bson:"t,omitempty"`
 	TypeFull string             `bson:"tf,omitempty"`
 }
 
-type kind uint8
+type Kind uint8
 
 const (
-	_ kind = iota
+	_ Kind = iota
 	Kind_city
 	Kind_settlement
 )

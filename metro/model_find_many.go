@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-type FindManyReq []struct {
+type FindManyReqItem struct {
 	Name     string
 	Line     string
 	Distance float32
@@ -25,7 +25,7 @@ type FindManyResItem struct {
 func (m Model) FindMany(
 	ctx context.Context,
 	areaID primitive.ObjectID,
-	vals FindManyReq,
+	vals []FindManyReqItem,
 ) (
 	res []FindManyResItem,
 	err error,
@@ -34,7 +34,6 @@ func (m Model) FindMany(
 	defer cancel()
 
 	res = make([]FindManyResItem, len(vals))
-
 	var eg errgroup.Group
 	for _i, _val := range vals {
 		i := _i

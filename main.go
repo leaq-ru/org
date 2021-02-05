@@ -3,11 +3,17 @@ package main
 import (
 	"context"
 	graceful "github.com/nnqq/scr-lib-graceful"
+	"github.com/nnqq/scr-org/area"
 	"github.com/nnqq/scr-org/config"
 	"github.com/nnqq/scr-org/consumer"
 	"github.com/nnqq/scr-org/dadata"
+	"github.com/nnqq/scr-org/location"
 	"github.com/nnqq/scr-org/logger"
+	"github.com/nnqq/scr-org/manager"
+	"github.com/nnqq/scr-org/metro"
 	"github.com/nnqq/scr-org/mongo"
+	"github.com/nnqq/scr-org/okved"
+	"github.com/nnqq/scr-org/org"
 	"github.com/nnqq/scr-org/stan"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
@@ -42,6 +48,12 @@ func main() {
 		stanConn,
 		cfg.ServiceName,
 		dadata.NewClient(strings.Split(cfg.DaData.Tokens, ","), db),
+		org.NewModel(db),
+		area.NewModel(db),
+		location.NewModel(db),
+		manager.NewModel(db),
+		okved.NewModel(db),
+		metro.NewModel(db),
 	)
 	logg.Must(cons.Subscribe())
 

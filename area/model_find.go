@@ -12,7 +12,7 @@ import (
 func (m Model) Find(
 	ctx context.Context,
 	name, fiasID, kladrID, typ, typeFull string,
-	kind kind,
+	kind Kind,
 ) (
 	id primitive.ObjectID,
 	err error,

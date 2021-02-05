@@ -105,16 +105,14 @@ type metro struct {
 	Distance float64 `json:"distance"`
 }
 
-type addressData struct {
+type AddressData struct {
 	CityFiasID         string  `json:"city_fias_id"`
 	CityKladrID        string  `json:"city_kladr_id"`
-	CityWithType       string  `json:"city_with_type"`
 	CityType           string  `json:"city_type"`
 	CityTypeFull       string  `json:"city_type_full"`
 	City               string  `json:"city"`
 	SettlementFiasID   string  `json:"settlement_fias_id"`
 	SettlementKladrID  string  `json:"settlement_kladr_id"`
-	SettlementWithType string  `json:"settlement_with_type"`
 	SettlementType     string  `json:"settlement_type"`
 	SettlementTypeFull string  `json:"settlement_type_full"`
 	Settlement         string  `json:"settlement"`
@@ -123,7 +121,7 @@ type addressData struct {
 
 type address struct {
 	UnrestrictedValue string      `json:"unrestricted_value"`
-	Data              addressData `json:"data"`
+	Data              AddressData `json:"data"`
 }
 
 type data struct {

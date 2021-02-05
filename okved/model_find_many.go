@@ -7,14 +7,14 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/sync/errgroup"
+	"strings"
 	"time"
 )
 
 type Upsert struct {
-	Code         string
-	Name         string
-	CodeWithName string
-	Kind         string
+	Code string
+	Name string
+	Kind string
 }
 
 func (m Model) FindMany(
@@ -35,7 +35,11 @@ func (m Model) FindMany(
 		val := _val
 		eg.Go(func() error {
 			upsertID := primitive.NewObjectID()
-			s := slug.Make(val.CodeWithName)
+			codeWithName := strings.Join([]string{
+				val.Code,
+				val.Name,
+			}, " ")
+			s := slug.Make(codeWithName)
 
 			ur, e := m.coll.UpdateOne(ctx, okved{
 				Slug: s,
@@ -44,7 +48,7 @@ func (m Model) FindMany(
 					ID:           upsertID,
 					Code:         val.Code,
 					Name:         val.Name,
-					CodeWithName: val.CodeWithName,
+					CodeWithName: codeWithName,
 					Kind:         toKind(val.Kind),
 				},
 			}, options.Update().SetUpsert(true))
