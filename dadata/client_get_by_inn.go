@@ -27,9 +27,11 @@ func (c Client) GetByINN(ctx context.Context, inn string) (res []Suggestion, err
 	}
 
 	dReq := fasthttp.AcquireRequest()
-	dReq.SetRequestURI("https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party")
+	dReq.Header.SetMethod(fasthttp.MethodPost)
+	dReq.Header.SetContentType("application/json")
 	dReq.Header.Set("Authorization", "Token "+tok)
-	dReq.SetBodyRaw(b)
+	dReq.SetRequestURI("https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party")
+	dReq.SetBody(b)
 	defer fasthttp.ReleaseRequest(dReq)
 
 	dRes := fasthttp.AcquireResponse()

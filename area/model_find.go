@@ -2,10 +2,12 @@ package area
 
 import (
 	"context"
+	"fmt"
 	"github.com/gosimple/slug"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"strconv"
 	"time"
 )
 
@@ -20,34 +22,44 @@ func (m Model) Find(
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	upsertID := primitive.NewObjectID()
+	upsertOK := false
 	s := slug.Make(name)
+	for i := 1; i <= 100; i += 1 {
+		upsertID := primitive.NewObjectID()
+		ur, e := m.coll.UpdateOne(ctx, area{
+			FiasID: fiasID,
+		}, bson.M{
+			"$setOnInsert": area{
+				ID:       upsertID,
+				Slug:     s,
+				KladrID:  kladrID,
+				Name:     name,
+				Kind:     kind,
+				Type:     typ,
+				TypeFull: typeFull,
+			},
+		}, options.Update().SetUpsert(true))
+		if e != nil {
+			s += "-" + strconv.Itoa(i)
+			continue
+		}
 
-	ur, err := m.coll.UpdateOne(ctx, area{
-		Slug: s,
-	}, bson.M{
-		"$setOnInsert": area{
-			ID:       upsertID,
-			FiasID:   fiasID,
-			KladrID:  kladrID,
-			Name:     name,
-			Kind:     kind,
-			Type:     typ,
-			TypeFull: typeFull,
-		},
-	}, options.Update().SetUpsert(true))
-	if err != nil {
-		return
+		if ur != nil && ur.UpsertedCount == 1 {
+			id = upsertID
+			return
+		}
+		upsertOK = true
+		break
 	}
 
-	if ur != nil && ur.UpsertedCount == 1 {
-		id = upsertID
+	if !upsertOK {
+		err = fmt.Errorf("failed to upsert area. fiasID=%s, name=%s", fiasID, name)
 		return
 	}
 
 	var doc area
 	err = m.coll.FindOne(ctx, area{
-		Slug: s,
+		FiasID: fiasID,
 	}).Decode(&doc)
 	if err != nil {
 		return

@@ -27,6 +27,10 @@ func (m Model) FindMany(
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
+	if len(vals) == 0 {
+		return
+	}
+
 	ids = make([]primitive.ObjectID, len(vals))
 
 	var eg errgroup.Group
@@ -81,8 +85,8 @@ func toKind(in string) kind {
 	switch in {
 	case "2001":
 		return kind_y2001
-	case "2004":
-		return kind_y2004
+	case "2014":
+		return kind_y2014
 	default:
 		return 0
 	}

@@ -28,7 +28,7 @@ type org struct {
 	BranchKind       branchKind           `bson:"bk,omitempty"`
 	BranchCount      uint32               `bson:"bc,omitempty"`
 	INN              uint64               `bson:"i,omitempty"`
-	KPP              uint64               `bson:"k,omitempty"`
+	KPP              uint64               `bson:"kp,omitempty"`
 	OGRN             uint64               `bson:"og,omitempty"`
 	OGRNDate         time.Time            `bson:"ogd,omitempty"`
 	OKATO            uint64               `bson:"oka,omitempty"`

@@ -25,8 +25,9 @@ func (t tokenPool) Get(ctx context.Context) (tok string, err error) {
 			_, e := t.coll.UpdateOne(ctx, token{
 				Value: item,
 			}, bson.M{
-				"$setOnInsert": token{
-					CreatedAt: time.Now().UTC(),
+				"$setOnInsert": bson.M{
+					"u":  0,
+					"ca": time.Now().UTC(),
 				},
 			}, options.Update().SetUpsert(true))
 			return e

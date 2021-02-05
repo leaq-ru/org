@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/google/uuid v1.2.0
-	github.com/gosimple/slug v1.9.0 // indirect
+	github.com/gosimple/slug v1.9.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/nats-io/stan.go v0.8.2
 	github.com/nnqq/scr-exporter v1.2.4

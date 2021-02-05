@@ -19,6 +19,10 @@ func (m Model) Find(
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
+	if name == "" {
+		return
+	}
+
 	upsertID := primitive.NewObjectID()
 	s := slug.Make(name)
 

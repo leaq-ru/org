@@ -33,13 +33,12 @@ func (m Model) ReindexMany(
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
+	if len(vals) == 0 {
+		return
+	}
+
 	var wm []mongo.WriteModel
 	for _, v := range vals {
-		s := slug.Make(strings.Join([]string{
-			v.Sugg.Value,
-			v.Sugg.Data.Inn,
-		}, " "))
-
 		opfCode, e := toUint64(v.Sugg.Data.Opf.Code)
 		if e != nil {
 			err = e
@@ -92,20 +91,21 @@ func (m Model) ReindexMany(
 		})
 		uo.SetUpdate(bson.M{
 			"$setOnInsert": org{
-				Slug: s,
+				Slug: makeSlug(v.Sugg),
 			},
 			"$set": org{
-				AreaID:           v.AreaID,
-				LocationID:       v.LocationID,
-				ManagerID:        v.ManagerID,
-				ManagerPost:      v.Sugg.Data.Management.Post,
-				EmployeeCount:    v.EmployeeCount,
-				OkvedOsnID:       v.OkvedOsnID,
-				OkvedDopIDs:      v.OkvedDopIDs,
-				Metros:           v.Metros,
-				Name:             v.Sugg.Value,
-				NameFullWithOPF:  v.Sugg.Data.Name.FullWithOpf,
-				NameShortWithOPF: v.Sugg.Data.Name.ShortWithOpf,
+				AreaID:        v.AreaID,
+				LocationID:    v.LocationID,
+				ManagerID:     v.ManagerID,
+				ManagerPost:   v.Sugg.Data.Management.Post,
+				EmployeeCount: v.EmployeeCount,
+				OkvedOsnID:    v.OkvedOsnID,
+				OkvedDopIDs:   v.OkvedDopIDs,
+				Metros:        v.Metros,
+				Name: strings.Join([]string{
+					v.Sugg.Data.Opf.Short,
+					v.Sugg.Data.Name.Full,
+				}, " "),
 				OPFCode:          opfCode,
 				OPFFull:          v.Sugg.Data.Opf.Full,
 				OPFShort:         v.Sugg.Data.Opf.Short,
@@ -129,6 +129,7 @@ func (m Model) ReindexMany(
 			},
 		})
 		uo.SetUpsert(true)
+		wm = append(wm, uo)
 	}
 
 	_, err = m.coll.BulkWrite(ctx, wm, options.BulkWrite().SetOrdered(false))
@@ -136,6 +137,10 @@ func (m Model) ReindexMany(
 }
 
 func toUint64(in string) (out uint64, err error) {
+	if in == "" {
+		return
+	}
+
 	i, err := strconv.Atoi(in)
 	out = uint64(i)
 	return
@@ -195,4 +200,12 @@ func toStatusKind(in string) statusKind {
 
 func msTsToTime(in int64) time.Time {
 	return time.Unix(in/1000, 0)
+}
+
+func makeSlug(sugg dadata.Suggestion) string {
+	return slug.Make(strings.Join([]string{
+		sugg.Data.Opf.Short,
+		sugg.Data.Name.Full,
+		sugg.Data.Inn,
+	}, " "))
 }

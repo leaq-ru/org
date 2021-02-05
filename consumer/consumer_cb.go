@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/sync/errgroup"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -35,13 +36,32 @@ func (c Consumer) cb(rawMsg *stan.Msg) {
 			}
 		}
 
-		suggs, err := c.dadataClient.GetByINN(ctx, msg.INN)
+		rawSuggs, err := c.dadataClient.GetByINN(ctx, msg.INN)
 		if err != nil {
 			c.logger.Error().Err(err).Send()
 			return
 		}
+
+		var suggs []dadata.Suggestion
+		seen := map[string]struct{}{}
+		for _, rs := range rawSuggs {
+			s := strings.Join([]string{
+				rs.Data.Opf.Short,
+				rs.Data.Name.Full,
+				rs.Data.Inn,
+			}, "")
+
+			_, ok := seen[s]
+			if ok {
+				continue
+			}
+
+			seen[s] = struct{}{}
+			suggs = append(suggs, rs)
+		}
 		if len(suggs) == 0 {
 			ack()
+			return
 		}
 
 		ups := make([]org.Upsert, len(suggs))
@@ -50,14 +70,15 @@ func (c Consumer) cb(rawMsg *stan.Msg) {
 			i := _i
 			sugg := _sugg
 
-			ec, e := strconv.Atoi(msg.EmployeeCount)
-			if e != nil {
-				c.logger.Error().Err(e).Send()
-				return
-			}
-
-			ups[i].EmployeeCount = uint32(ec)
 			ups[i].Sugg = sugg
+			if msg.EmployeeCount != "" {
+				ec, e := strconv.Atoi(msg.EmployeeCount)
+				if e != nil {
+					c.logger.Error().Err(e).Send()
+					return
+				}
+				ups[i].EmployeeCount = uint32(ec)
+			}
 
 			eg.Go(func() (e error) {
 				ups[i].LocationID, e = c.locationModel.Find(ctx, sugg.Data.Address.UnrestrictedValue)
@@ -70,11 +91,16 @@ func (c Consumer) cb(rawMsg *stan.Msg) {
 			})
 
 			eg.Go(func() error {
-				ids, e := c.okvedModel.FindMany(ctx, []okved.Upsert{{
-					Code: msg.OkvedOsn.Code,
-					Name: msg.OkvedOsn.Name,
-					Kind: msg.OkvedOsn.Ver,
-				}})
+				var ou []okved.Upsert
+				if msg.OkvedOsn.Code != "" && msg.OkvedOsn.Name != "" && msg.OkvedOsn.Ver != "" {
+					ou = append(ou, okved.Upsert{
+						Code: msg.OkvedOsn.Code,
+						Name: msg.OkvedOsn.Name,
+						Kind: msg.OkvedOsn.Ver,
+					})
+				}
+
+				ids, e := c.okvedModel.FindMany(ctx, ou)
 				if e != nil {
 					return e
 				}
@@ -149,6 +175,8 @@ func (c Consumer) getAreaID(ctx context.Context, ad dadata.AddressData) (id prim
 		areaKind = area.Kind_city
 	} else if ad.Settlement != "" {
 		areaKind = area.Kind_settlement
+	} else {
+		return
 	}
 
 	return c.areaModel.Find(
