@@ -86,7 +86,9 @@ func (c Consumer) cb(rawMsg *stan.Msg) {
 					return e
 				}
 
-				ups[i].OkvedOsnID = ids[0]
+				if len(ids) != 0 {
+					ups[i].OkvedOsnID = ids[0]
+				}
 				return nil
 			})
 
