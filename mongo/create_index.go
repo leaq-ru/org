@@ -16,11 +16,6 @@ func createIndex(db *mongo.Database) (err error) {
 			"s": 1,
 		},
 		Options: options.Index().SetUnique(true),
-	}, {
-		Keys: bson.M{
-			"d": 1,
-		},
-		Options: options.Index().SetUnique(true),
 	},
 	//	{Keys: bson.D{{
 	//		Key:   "a",

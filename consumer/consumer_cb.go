@@ -13,7 +13,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/sync/errgroup"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -36,28 +35,10 @@ func (c Consumer) cb(rawMsg *stan.Msg) {
 			}
 		}
 
-		rawSuggs, err := c.dadataClient.GetByINN(ctx, msg.INN)
+		suggs, err := c.dadataClient.GetByINN(ctx, msg.INN)
 		if err != nil {
 			c.logger.Error().Err(err).Send()
 			return
-		}
-
-		var suggs []dadata.Suggestion
-		seen := map[string]struct{}{}
-		for _, rs := range rawSuggs {
-			s := strings.Join([]string{
-				rs.Data.Opf.Short,
-				rs.Data.Name.Full,
-				rs.Data.Inn,
-			}, "")
-
-			_, ok := seen[s]
-			if ok {
-				continue
-			}
-
-			seen[s] = struct{}{}
-			suggs = append(suggs, rs)
 		}
 		if len(suggs) == 0 {
 			ack()
