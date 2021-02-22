@@ -2,7 +2,7 @@ package area
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
-type area struct {
+type Area struct {
 	ID       primitive.ObjectID `bson:"_id,omitempty"`
 	Slug     string             `bson:"s,omitempty"`
 	FiasID   string             `bson:"fi,omitempty"`

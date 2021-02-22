@@ -86,11 +86,11 @@ func (m Model) ReindexMany(
 		}
 
 		uo := mongo.NewUpdateOneModel()
-		uo.SetFilter(org{
+		uo.SetFilter(Org{
 			Slug: makeSlug(v.Sugg),
 		})
 		uo.SetUpdate(bson.M{
-			"$set": org{
+			"$set": Org{
 				DaDataID:      v.Sugg.Data.Hid,
 				AreaID:        v.AreaID,
 				LocationID:    v.LocationID,

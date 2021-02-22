@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type org struct {
+type Org struct {
 	ID               primitive.ObjectID   `bson:"_id,omitempty"`
 	Slug             string               `bson:"s,omitempty"`
 	DaDataID         string               `bson:"d,omitempty"`

@@ -2,7 +2,7 @@ package okved
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
-type okved struct {
+type Okved struct {
 	ID           primitive.ObjectID `bson:"_id,omitempty"`
 	Slug         string             `bson:"s,omitempty"`
 	Code         string             `bson:"c,omitempty"`

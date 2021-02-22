@@ -26,10 +26,10 @@ func (m Model) Find(
 	s := slug.Make(name)
 	for i := 1; i <= 100; i += 1 {
 		upsertID := primitive.NewObjectID()
-		ur, e := m.coll.UpdateOne(ctx, area{
+		ur, e := m.coll.UpdateOne(ctx, Area{
 			FiasID: fiasID,
 		}, bson.M{
-			"$setOnInsert": area{
+			"$setOnInsert": Area{
 				ID:       upsertID,
 				Slug:     s,
 				KladrID:  kladrID,
@@ -57,8 +57,8 @@ func (m Model) Find(
 		return
 	}
 
-	var doc area
-	err = m.coll.FindOne(ctx, area{
+	var doc Area
+	err = m.coll.FindOne(ctx, Area{
 		FiasID: fiasID,
 	}).Decode(&doc)
 	if err != nil {

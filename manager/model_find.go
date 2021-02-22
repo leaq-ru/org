@@ -26,10 +26,10 @@ func (m Model) Find(
 	upsertID := primitive.NewObjectID()
 	s := slug.Make(name)
 
-	ur, err := m.coll.UpdateOne(ctx, manager{
+	ur, err := m.coll.UpdateOne(ctx, Manager{
 		Slug: s,
 	}, bson.M{
-		"$setOnInsert": manager{
+		"$setOnInsert": Manager{
 			ID:   upsertID,
 			Name: name,
 		},
@@ -43,8 +43,8 @@ func (m Model) Find(
 		return
 	}
 
-	var doc manager
-	err = m.coll.FindOne(ctx, manager{
+	var doc Manager
+	err = m.coll.FindOne(ctx, Manager{
 		Slug: s,
 	}).Decode(&doc)
 	if err != nil {

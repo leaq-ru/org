@@ -14,7 +14,9 @@ import (
 	"github.com/nnqq/scr-org/mongo"
 	"github.com/nnqq/scr-org/okved"
 	"github.com/nnqq/scr-org/org"
+	"github.com/nnqq/scr-org/orgimpl"
 	"github.com/nnqq/scr-org/stan"
+	pbOrg "github.com/nnqq/scr-proto/codegen/go/org"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
@@ -43,22 +45,38 @@ func main() {
 	db, err := mongo.NewConn(ctx, cfg.ServiceName, cfg.MongoDB.URL)
 	logg.Must(err)
 
+	orgModel := org.NewModel(db)
+	areaModel := area.NewModel(db)
+	locationModel := location.NewModel(db)
+	managerModel := manager.NewModel(db)
+	okvedModel := okved.NewModel(db)
+	metroModel := metro.NewModel(db)
+
 	cons := consumer.NewConsumer(
 		logg.ZL,
 		stanConn,
 		cfg.ServiceName,
 		dadata.NewClient(strings.Split(cfg.DaData.Tokens, ","), db),
-		org.NewModel(db),
-		area.NewModel(db),
-		location.NewModel(db),
-		manager.NewModel(db),
-		okved.NewModel(db),
-		metro.NewModel(db),
+		orgModel,
+		areaModel,
+		locationModel,
+		managerModel,
+		okvedModel,
+		metroModel,
 	)
 	logg.Must(cons.Subscribe())
 
 	srv := grpc.NewServer()
 	grpc_health_v1.RegisterHealthServer(srv, health.NewServer())
+	pbOrg.RegisterOrgServer(srv, orgimpl.NewServer(
+		logg.ZL,
+		orgModel,
+		areaModel,
+		locationModel,
+		managerModel,
+		okvedModel,
+		metroModel,
+	))
 
 	lis, err := net.Listen("tcp", strings.Join([]string{
 		"0.0.0.0",
