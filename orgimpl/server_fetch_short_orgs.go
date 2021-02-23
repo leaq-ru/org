@@ -2,6 +2,7 @@ package orgimpl
 
 import (
 	"context"
+	"errors"
 	"github.com/nnqq/scr-org/area"
 	"github.com/nnqq/scr-org/location"
 	"github.com/nnqq/scr-org/manager"
@@ -96,7 +97,63 @@ func (s *server) fetchShortOrgs(ctx context.Context, orgs []org.Org) (res *pbOrg
 	for _, o := range orgs {
 		var areaItem *pbOrg.AreaItem
 		if !o.AreaID.IsZero() {
+			val, ok := mArea[o.AreaID]
+			if !ok {
+				err = errors.New("expected to get area from map, but nothing found o.AreaID=" + o.AreaID.Hex())
+				return
+			}
 
+			areaItem = &pbOrg.AreaItem{
+				Id:   val.ID.Hex(),
+				Slug: val.Slug,
+				Name: val.Name,
+			}
+		}
+
+		var managerItem *pbOrg.ManagerItem
+		if !o.ManagerID.IsZero() {
+			val, ok := mManager[o.ManagerID]
+			if !ok {
+				err = errors.New("expected to get manager from map, but nothing found o.ManagerID=" + o.ManagerID.Hex())
+				return
+			}
+
+			managerItem = &pbOrg.ManagerItem{
+				Id:   val.ID.Hex(),
+				Slug: val.Slug,
+				Name: val.Name,
+			}
+		}
+
+		var locationItem *pbOrg.LocationItem
+		if !o.AreaID.IsZero() {
+			val, ok := mLocation[o.LocationID]
+			if !ok {
+				err = errors.New("expected to get location from map, but nothing found o.LocationID=" + o.LocationID.Hex())
+				return
+			}
+
+			locationItem = &pbOrg.LocationItem{
+				Id:   val.ID.Hex(),
+				Slug: val.Slug,
+				Name: val.Name,
+			}
+		}
+
+		var okvedItem *pbOrg.OkvedItem
+		if !o.OkvedOsnID.IsZero() {
+			val, ok := mOkved[o.OkvedOsnID]
+			if !ok {
+				err = errors.New("expected to get okved from map, but nothing found o.OkvedOsnID=" + o.OkvedOsnID.Hex())
+				return
+			}
+
+			okvedItem = &pbOrg.OkvedItem{
+				Id:   val.ID.Hex(),
+				Slug: val.Slug,
+				Name: val.Name,
+				Kind: pbOrg.OkvedKind(val.Kind),
+			}
 		}
 
 		res.Orgs = append(res.Orgs, &pbOrg.OrgShort{

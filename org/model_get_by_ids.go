@@ -11,10 +11,11 @@ type idKind uint8
 
 const (
 	_ idKind = iota
-	IDKind_AreaID
-	IDKind_ManagerID
-	IDKind_MetroID
-	IDKind_OkvedID
+	IDKind_areaID
+	IDKind_managerID
+	IDKind_metroID
+	IDKind_okvedID
+	IDKind_locationID
 )
 
 type ID struct {
@@ -35,14 +36,16 @@ func (m Model) GetByIDs(
 	for _, id := range ids {
 		var key string
 		switch id.Kind {
-		case IDKind_AreaID:
+		case IDKind_areaID:
 			key = "a"
-		case IDKind_ManagerID:
+		case IDKind_managerID:
 			key = "mi"
-		case IDKind_MetroID:
+		case IDKind_metroID:
 			key = "m.id"
-		case IDKind_OkvedID:
+		case IDKind_okvedID:
 			key = "o"
+		case IDKind_locationID:
+			key = "l"
 		}
 		query[key] = id.Val
 	}

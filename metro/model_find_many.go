@@ -50,10 +50,10 @@ func (m Model) FindMany(
 			}
 			s := slug.Make(forSlug)
 
-			ur, e := m.coll.UpdateOne(ctx, metro{
+			ur, e := m.coll.UpdateOne(ctx, Metro{
 				Slug: s,
 			}, bson.M{
-				"$setOnInsert": metro{
+				"$setOnInsert": Metro{
 					ID:     upsertID,
 					AreaID: areaID,
 					Name:   val.Name,
@@ -72,8 +72,8 @@ func (m Model) FindMany(
 				return nil
 			}
 
-			var doc metro
-			e = m.coll.FindOne(ctx, metro{
+			var doc Metro
+			e = m.coll.FindOne(ctx, Metro{
 				Slug: s,
 			}).Decode(&doc)
 			if e != nil {

@@ -1,4 +1,4 @@
-package okved
+package metro
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (m Model) GetByIDs(ctx context.Context, ids []primitive.ObjectID) (res []Okved, err error) {
+func (m Model) GetByIDs(ctx context.Context, ids []primitive.ObjectID) (res []Metro, err error) {
 	cur, err := m.coll.Find(ctx, bson.M{
 		"_id": bson.M{
 			"$in": ids,

@@ -16,64 +16,51 @@ func createIndex(db *mongo.Database) (err error) {
 			"s": 1,
 		},
 		Options: options.Index().SetUnique(true),
-	},
-	//	{Keys: bson.D{{
-	//		Key:   "a",
-	//		Value: 1,
-	//	}, {
-	//		Key:   "_id",
-	//		Value: -1,
-	//	}},
-	//}, {
-	//	Keys: bson.D{{
-	//		Key:   "l",
-	//		Value: 1,
-	//	}, {
-	//		Key:   "_id",
-	//		Value: -1,
-	//	}},
-	//}, {
-	//	Keys: bson.D{{
-	//		Key:   "mi",
-	//		Value: 1,
-	//	}, {
-	//		Key:   "_id",
-	//		Value: -1,
-	//	}},
-	//}, {
-	//	Keys: bson.D{{
-	//		Key:   "o",
-	//		Value: 1,
-	//	}, {
-	//		Key:   "_id",
-	//		Value: -1,
-	//	}},
-	//}, {
-	//	Keys: bson.D{{
-	//		Key:   "m.id",
-	//		Value: 1,
-	//	}, {
-	//		Key:   "_id",
-	//		Value: -1,
-	//	}},
-	//}, {
-	//	Keys: bson.D{{
-	//		Key:   "sk",
-	//		Value: 1,
-	//	}, {
-	//		Key:   "_id",
-	//		Value: -1,
-	//	}},
-	//}, {
-	//	Keys: bson.D{{
-	//		Key:   "rd",
-	//		Value: -1,
-	//	}, {
-	//		Key:   "_id",
-	//		Value: -1,
-	//	}},
-	//}
-	})
+	}, {
+		Keys: bson.M{
+			"i": 1,
+		},
+	}, {
+		Keys: bson.D{{
+			Key:   "a",
+			Value: 1,
+		}, {
+			Key:   "_id",
+			Value: -1,
+		}},
+	}, {
+		Keys: bson.D{{
+			Key:   "l",
+			Value: 1,
+		}, {
+			Key:   "_id",
+			Value: -1,
+		}},
+	}, {
+		Keys: bson.D{{
+			Key:   "mi",
+			Value: 1,
+		}, {
+			Key:   "_id",
+			Value: -1,
+		}},
+	}, {
+		Keys: bson.D{{
+			Key:   "m.id",
+			Value: 1,
+		}, {
+			Key:   "_id",
+			Value: -1,
+		}},
+	}, {
+		Keys: bson.D{{
+			Key:   "o",
+			Value: 1,
+		}, {
+			Key:   "_id",
+			Value: -1,
+		}},
+	}})
 	if err != nil {
 		return
 	}

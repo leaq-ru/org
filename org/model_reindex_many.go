@@ -171,9 +171,9 @@ func toKind(in string) kind {
 func toBranchKind(in string) branchKind {
 	switch in {
 	case "MAIN":
-		return branchKind_main
+		return BranchKind_main
 	case "BRANCH":
-		return branchKind_branch
+		return BranchKind_branch
 	default:
 		return 0
 	}

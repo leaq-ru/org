@@ -3,11 +3,13 @@ package orgimpl
 import (
 	"context"
 	safeerr "github.com/nnqq/scr-lib-safeerr"
-	"github.com/nnqq/scr-proto/codegen/go/org"
+	"github.com/nnqq/scr-org/org"
+	pbOrg "github.com/nnqq/scr-proto/codegen/go/org"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
 
-func (s *server) Get(ctx context.Context, req *org.GetRequest) (res *org.GetResponse, err error) {
+func (s *server) GetByMetroId(ctx context.Context, req *pbOrg.GetByMetroIdRequest) (res *pbOrg.GetResponse, err error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
@@ -20,7 +22,16 @@ func (s *server) Get(ctx context.Context, req *org.GetRequest) (res *org.GetResp
 		limit = req.GetOpts().GetLimit()
 	}
 
-	orgs, err := s.orgModel.GetByIDs(ctx, nil, req.GetOpts().GetSkip(), limit)
+	id, err := primitive.ObjectIDFromHex(req.GetMetroId())
+	if err != nil {
+		err = safeerr.InvalidParam("metroId")
+		return
+	}
+
+	orgs, err := s.orgModel.GetByIDs(ctx, []org.ID{{
+		Val:  id,
+		Kind: org.IDKind_metroID,
+	}}, req.GetOpts().GetSkip(), limit)
 	if err != nil {
 		s.logger.Error().Err(err).Send()
 		err = safeerr.InternalServerError

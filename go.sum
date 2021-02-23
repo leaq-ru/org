@@ -195,6 +195,10 @@ github.com/nnqq/scr-exporter v1.2.4 h1:2+I6UPzy0qS+ZMbpegApGdPvDOJGbPvclYuj3YiPj
 github.com/nnqq/scr-exporter v1.2.4/go.mod h1:i8lrmYnWjyq9qin0mWqrG0lMWqzwv8Q9njBdwOyk6jI=
 github.com/nnqq/scr-lib-graceful v1.0.0 h1:Rwj3HYGq4u9LHto6Sl9oNxVwTasGJWfk5Ut4k0lxV+M=
 github.com/nnqq/scr-lib-graceful v1.0.0/go.mod h1:/2o2N5m9iXXKMxZXF108U3vqy0o0FLoqJcAYIG3n+Ec=
+github.com/nnqq/scr-lib-safeerr v1.0.0 h1:6qP3srFmUwrm8lhMslOmbddNCGsT3kPccdxwvAEcv7E=
+github.com/nnqq/scr-lib-safeerr v1.0.0/go.mod h1:ygEXL0wWbBl6cRz/c3+9WW/TYCXAzY1fSbwDhYEFoKg=
+github.com/nnqq/scr-lib-safeerr v1.0.1 h1:/sLu1gZ1juYI+cIww9cceH35rdI6QUkragbxA7Avy+E=
+github.com/nnqq/scr-lib-safeerr v1.0.1/go.mod h1:ygEXL0wWbBl6cRz/c3+9WW/TYCXAzY1fSbwDhYEFoKg=
 github.com/nnqq/scr-org-producer v1.0.0 h1:Ksp29dBNlY7r6he8adCTlBfq8n0aVsSxIRBUxjm9wM4=
 github.com/nnqq/scr-org-producer v1.0.0/go.mod h1:gMvmKLPhb3GDdH+D8aHJCQUsrpihgYPIpGhp9vxDRVg=
 github.com/nnqq/scr-proto v1.19.1/go.mod h1:gN6hMpPZeeiwvv/3w9NwvXR1xOQaXEqREbKvE+HXOk0=
@@ -202,6 +206,8 @@ github.com/nnqq/scr-proto v1.20.0 h1:wOR5k/NQ82IV5SVufaSeHodnVxn958C0vSLIMJaF4cM
 github.com/nnqq/scr-proto v1.20.0/go.mod h1:gN6hMpPZeeiwvv/3w9NwvXR1xOQaXEqREbKvE+HXOk0=
 github.com/nnqq/scr-proto v1.20.1 h1:iuj0b3px44nLAtPKdNAlxX8PlC0NvypIs6Cn9m5zR2A=
 github.com/nnqq/scr-proto v1.20.1/go.mod h1:gN6hMpPZeeiwvv/3w9NwvXR1xOQaXEqREbKvE+HXOk0=
+github.com/nnqq/scr-proto v1.20.2 h1:yrLlDq+QReyBDcTGvvlZsagjzWZkCwmQy7LLX0iGWOw=
+github.com/nnqq/scr-proto v1.20.2/go.mod h1:gN6hMpPZeeiwvv/3w9NwvXR1xOQaXEqREbKvE+HXOk0=
 github.com/pascaldekloe/goe v0.1.0 h1:cBOtyMzM9HTpWjXfbbunk26uA6nG3a8n06Wieeh0MwY=
 github.com/pascaldekloe/goe v0.1.0/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/pelletier/go-toml v1.7.0/go.mod h1:vwGMzjaWMwyfHwgIBhI2YUM4fB6nL6lVAvS1LBMMhTE=

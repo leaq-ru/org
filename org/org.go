@@ -59,8 +59,8 @@ type branchKind uint8
 
 const (
 	_ branchKind = iota
-	branchKind_main
-	branchKind_branch
+	BranchKind_main
+	BranchKind_branch
 )
 
 type opfKind uint8

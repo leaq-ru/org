@@ -16,6 +16,6 @@ func (m Model) GetByIDs(ctx context.Context, ids []primitive.ObjectID) (res []Ma
 		return
 	}
 
-	err = cur.Decode(&res)
+	err = cur.All(ctx, &res)
 	return
 }
