@@ -2,8 +2,10 @@ package orgimpl
 
 import (
 	"context"
+	"errors"
 	safeerr "github.com/nnqq/scr-lib-safeerr"
 	pbOrg "github.com/nnqq/scr-proto/codegen/go/org"
+	"go.mongodb.org/mongo-driver/mongo"
 	"strconv"
 	"strings"
 	"time"
@@ -28,7 +30,11 @@ func (s *server) GetBySlug(ctx context.Context, req *pbOrg.GetBySlugRequest) (re
 	orgs, err := s.orgModel.GetByINN(ctx, uint64(inn))
 	if err != nil {
 		s.logger.Error().Err(err).Send()
-		err = safeerr.InternalServerError
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			err = safeerr.NotFound("org")
+		} else {
+			err = safeerr.InternalServerError
+		}
 		return
 	}
 

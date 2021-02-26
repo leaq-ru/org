@@ -50,7 +50,12 @@ func (m Model) GetByIDs(
 		query[key] = id.Val
 	}
 
-	cur, err := m.coll.Find(ctx, query, options.Find().SetSkip(int64(skip)).SetLimit(int64(limit)))
+	cur, err := m.coll.Find(ctx, query, options.Find().
+		SetSkip(int64(skip)).
+		SetLimit(int64(limit)).
+		SetSort(bson.M{
+			"_id": -1,
+		}))
 	if err != nil {
 		return
 	}

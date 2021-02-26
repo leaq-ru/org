@@ -12,6 +12,7 @@ import (
 	pbOrg "github.com/nnqq/scr-proto/codegen/go/org"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/sync/errgroup"
+	"sync"
 	"time"
 )
 
@@ -52,11 +53,21 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 	metroIDs := toSlice(unMetroIDs)
 
 	var eg errgroup.Group
-	var areaDocs []area.Area
+	var (
+		areaMu   sync.Mutex
+		areaDocs []area.Area
+	)
 	if len(areaIDs) != 0 {
-		eg.Go(func() (e error) {
-			areaDocs, e = s.areaModel.GetByIDs(ctx, areaIDs)
-			return
+		eg.Go(func() error {
+			ad, e := s.areaModel.GetByIDs(ctx, areaIDs)
+			if e != nil {
+				return e
+			}
+
+			areaMu.Lock()
+			areaDocs = append(areaDocs, ad...)
+			areaMu.Unlock()
+			return nil
 		})
 	}
 
@@ -86,9 +97,27 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 
 	var metroDocs []metro.Metro
 	if len(metroIDs) != 0 {
-		eg.Go(func() (e error) {
-			metroDocs, e = s.metroModel.GetByIDs(ctx, metroIDs)
-			return
+		eg.Go(func() error {
+			md, e := s.metroModel.GetByIDs(ctx, metroIDs)
+			if e != nil {
+				return e
+			}
+			metroDocs = md
+
+			var dopAreaIDs []primitive.ObjectID
+			for _, doc := range metroDocs {
+				dopAreaIDs = append(dopAreaIDs, doc.AreaID)
+			}
+
+			ad, e := s.areaModel.GetByIDs(ctx, dopAreaIDs)
+			if e != nil {
+				return e
+			}
+
+			areaMu.Lock()
+			areaDocs = append(areaDocs, ad...)
+			areaMu.Unlock()
+			return nil
 		})
 	}
 	err = eg.Wait()
@@ -119,7 +148,10 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 
 	res = &pbOrg.GetBySlugResponse{}
 	for _, o := range orgs {
-		var areaItem *pbOrg.AreaItem
+		var (
+			areaItem     *pbOrg.AreaItem
+			areaFullItem *pbOrg.AreaFullItem
+		)
 		if !o.AreaID.IsZero() {
 			val, ok := mArea[o.AreaID]
 			if !ok {
@@ -131,6 +163,16 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 				Id:   val.ID.Hex(),
 				Slug: val.Slug,
 				Name: val.Name,
+			}
+
+			areaFullItem = &pbOrg.AreaFullItem{
+				Id:       val.ID.Hex(),
+				Slug:     val.Slug,
+				Name:     val.Name,
+				FiasId:   val.FiasID,
+				KladrId:  val.KladrID,
+				Type:     val.Type,
+				TypeFull: val.TypeFull,
 			}
 		}
 
@@ -174,7 +216,7 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 			}
 		}
 
-		var okvedOsnItem *pbOrg.OkvedItem
+		var okvedFullOsnItem *pbOrg.OkvedFullItem
 		if !o.OkvedOsnID.IsZero() {
 			val, ok := mOkved[o.OkvedOsnID]
 			if !ok {
@@ -182,11 +224,13 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 				return
 			}
 
-			okvedOsnItem = &pbOrg.OkvedItem{
-				Id:   val.ID.Hex(),
-				Slug: val.Slug,
-				Name: val.Name,
-				Kind: pbOrg.OkvedKind(val.Kind),
+			okvedFullOsnItem = &pbOrg.OkvedFullItem{
+				Id:           val.ID.Hex(),
+				Slug:         val.Slug,
+				Name:         val.Name,
+				Code:         val.Code,
+				CodeWithName: val.CodeWithName,
+				Kind:         pbOrg.OkvedKind(val.Kind),
 			}
 		}
 
@@ -206,7 +250,7 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 			})
 		}
 
-		var metroItem []*pbOrg.MetroItem
+		var metroFullItem []*pbOrg.MetroFullItem
 		for _, m := range o.Metros {
 			if !m.ID.IsZero() {
 				val, ok := mMetro[m.ID]
@@ -215,11 +259,26 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 					return
 				}
 
-				metroItem = append(metroItem, &pbOrg.MetroItem{
-					Id:       val.ID.Hex(),
-					Slug:     val.Slug,
-					Name:     val.Name,
-					Distance: m.Distance,
+				ar, ok := mArea[val.ID]
+				if !ok {
+					err = errors.New("expected to get area from map, but nothing found val.ID=" + val.ID.Hex())
+					return
+				}
+
+				metroFullItem = append(metroFullItem, &pbOrg.MetroFullItem{
+					Id:   val.ID.Hex(),
+					Slug: val.Slug,
+					Name: val.Name,
+					Line: val.Line,
+					Area: &pbOrg.AreaFullItem{
+						Id:       ar.ID.Hex(),
+						Slug:     ar.Slug,
+						Name:     ar.Name,
+						FiasId:   ar.FiasID,
+						KladrId:  ar.KladrID,
+						Type:     ar.Type,
+						TypeFull: ar.TypeFull,
+					},
 				})
 			}
 		}
@@ -233,13 +292,13 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 			Ogrn:             float64(o.OGRN),
 			Kind:             pbOrg.OrgKind(o.Kind),
 			Manager:          managerItem,
-			Area:             areaItem,
+			Area:             areaFullItem,
 			Location:         locationItem,
-			Okved:            okvedOsnItem,
+			Okved:            okvedFullOsnItem,
 			StatusKind:       pbOrg.StatusKind(o.StatusKind),
 			OkvedDop:         okvedDopItems,
 			EmployeeCount:    o.EmployeeCount,
-			Metros:           metroItem,
+			Metros:           metroFullItem,
 			NameFullWithOpf:  o.NameFullWithOPF,
 			NameShortWithOpf: o.NameShortWithOPF,
 			OpfCode:          float64(o.OPFCode),
