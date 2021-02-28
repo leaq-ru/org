@@ -216,7 +216,7 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 			}
 		}
 
-		var okvedFullOsnItem *pbOrg.OkvedFullItem
+		var okved *pbOrg.OkvedFullItem
 		if !o.OkvedOsnID.IsZero() {
 			val, ok := mOkved[o.OkvedOsnID]
 			if !ok {
@@ -224,7 +224,7 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 				return
 			}
 
-			okvedFullOsnItem = &pbOrg.OkvedFullItem{
+			okved = &pbOrg.OkvedFullItem{
 				Id:           val.ID.Hex(),
 				Slug:         val.Slug,
 				Name:         val.Name,
@@ -234,7 +234,7 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 			}
 		}
 
-		var okvedDopItems []*pbOrg.OkvedItem
+		var okvedDop []*pbOrg.OkvedItem
 		for _, id := range o.OkvedDopIDs {
 			val, ok := mOkved[id]
 			if !ok {
@@ -242,7 +242,7 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 				return
 			}
 
-			okvedDopItems = append(okvedDopItems, &pbOrg.OkvedItem{
+			okvedDop = append(okvedDop, &pbOrg.OkvedItem{
 				Id:   val.ID.Hex(),
 				Slug: val.Slug,
 				Name: val.Name,
@@ -250,7 +250,7 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 			})
 		}
 
-		var metroFullItem []*pbOrg.MetroFullItem
+		var metros []*pbOrg.MetroFullItemWithDistance
 		for _, m := range o.Metros {
 			if !m.ID.IsZero() {
 				val, ok := mMetro[m.ID]
@@ -265,11 +265,12 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 					return
 				}
 
-				metroFullItem = append(metroFullItem, &pbOrg.MetroFullItem{
-					Id:   val.ID.Hex(),
-					Slug: val.Slug,
-					Name: val.Name,
-					Line: val.Line,
+				metros = append(metros, &pbOrg.MetroFullItemWithDistance{
+					Id:       val.ID.Hex(),
+					Slug:     val.Slug,
+					Name:     val.Name,
+					Line:     val.Line,
+					Distance: m.Distance,
 					Area: &pbOrg.AreaFullItem{
 						Id:       ar.ID.Hex(),
 						Slug:     ar.Slug,
@@ -294,11 +295,11 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 			Manager:          managerItem,
 			Area:             areaFullItem,
 			Location:         locationItem,
-			Okved:            okvedFullOsnItem,
+			Okved:            okved,
 			StatusKind:       pbOrg.StatusKind(o.StatusKind),
-			OkvedDop:         okvedDopItems,
+			OkvedDop:         okvedDop,
 			EmployeeCount:    o.EmployeeCount,
-			Metros:           metroFullItem,
+			Metros:           metros,
 			NameFullWithOpf:  o.NameFullWithOPF,
 			NameShortWithOpf: o.NameShortWithOPF,
 			OpfCode:          float64(o.OPFCode),

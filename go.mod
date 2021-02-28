@@ -10,7 +10,7 @@ require (
 	github.com/nnqq/scr-lib-graceful v1.0.0
 	github.com/nnqq/scr-lib-safeerr v1.0.1
 	github.com/nnqq/scr-org-producer v1.0.0
-	github.com/nnqq/scr-proto v1.20.4
+	github.com/nnqq/scr-proto v1.20.5
 	github.com/rs/zerolog v1.20.0
 	github.com/valyala/fasthttp v1.19.0
 	go.mongodb.org/mongo-driver v1.4.6
