@@ -216,15 +216,15 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 			}
 		}
 
-		var okved *pbOrg.OkvedFullItem
+		var okvedOsn *pbOrg.OkvedFullItem
 		if !o.OkvedOsnID.IsZero() {
 			val, ok := mOkved[o.OkvedOsnID]
 			if !ok {
-				err = errors.New("expected to get okved from map, but nothing found o.OkvedOsnID=" + o.OkvedOsnID.Hex())
+				err = errors.New("expected to get okvedOsn from map, but nothing found o.OkvedOsnID=" + o.OkvedOsnID.Hex())
 				return
 			}
 
-			okved = &pbOrg.OkvedFullItem{
+			okvedOsn = &pbOrg.OkvedFullItem{
 				Id:           val.ID.Hex(),
 				Slug:         val.Slug,
 				Name:         val.Name,
@@ -238,7 +238,7 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 		for _, id := range o.OkvedDopIDs {
 			val, ok := mOkved[id]
 			if !ok {
-				err = errors.New("expected to get okved from map, but nothing found o.OkvedDopIDs=" + id.Hex())
+				err = errors.New("expected to get okvedOsn from map, but nothing found o.OkvedDopIDs=" + id.Hex())
 				return
 			}
 
@@ -295,7 +295,7 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 			Manager:          managerItem,
 			Area:             areaFullItem,
 			Location:         locationItem,
-			Okved:            okved,
+			Okved:            okvedOsn,
 			StatusKind:       pbOrg.StatusKind(o.StatusKind),
 			OkvedDop:         okvedDop,
 			EmployeeCount:    o.EmployeeCount,
@@ -321,7 +321,7 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 }
 
 func toNotZeroTime(in time.Time) (out string) {
-	if !in.IsZero() {
+	if !in.After(time.Unix(0, 0).UTC()) {
 		out = in.String()
 	}
 	return
