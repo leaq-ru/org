@@ -9,6 +9,7 @@ import (
 	"github.com/nnqq/scr-org/metro"
 	"github.com/nnqq/scr-org/okved"
 	"github.com/nnqq/scr-org/org"
+	"github.com/nnqq/scr-proto/codegen/go/opts"
 	pbOrg "github.com/nnqq/scr-proto/codegen/go/org"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/sync/errgroup"
@@ -16,7 +17,13 @@ import (
 	"time"
 )
 
-func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res *pbOrg.GetBySlugResponse, err error) {
+func (s *server) fetchOrgWithBranchesAndRelated(
+	ctx context.Context,
+	orgs []org.Org,
+) (
+	res *pbOrg.GetBySlugResponse,
+	err error,
+) {
 	unAreaIDs := map[primitive.ObjectID]struct{}{}
 	unManagerIDs := map[primitive.ObjectID]struct{}{}
 	unOkvedIDs := map[primitive.ObjectID]struct{}{}
@@ -120,6 +127,35 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 			return nil
 		})
 	}
+
+	var related []*pbOrg.OrgShort
+	eg.Go(func() error {
+		var mainOrg org.Org
+		for _, o := range orgs {
+			if o.BranchKind == org.BranchKind_main {
+				mainOrg = o
+				break
+			}
+		}
+		if mainOrg.ID.IsZero() {
+			return nil
+		}
+
+		rel, e := s.GetRelated(ctx, &pbOrg.GetRelatedRequest{
+			Opts: &opts.SkipLimit{
+				Limit: 6,
+			},
+			AreaId:       mainOrg.AreaID.Hex(),
+			OkvedId:      mainOrg.OkvedOsnID.Hex(),
+			ExcludeOrgId: mainOrg.ID.Hex(),
+		})
+		if e != nil {
+			return e
+		}
+
+		related = rel.GetOrgs()
+		return nil
+	})
 	err = eg.Wait()
 	if err != nil {
 		return
@@ -316,12 +352,13 @@ func (s *server) fetchOrgWithBranches(ctx context.Context, orgs []org.Org) (res 
 			LiquidationDate:  toNotZeroTime(o.LiquidationDate),
 			UpdatedAt:        toNotZeroTime(o.UpdatedAt),
 		}
+		res.Related = related
 	}
 	return
 }
 
 func toNotZeroTime(in time.Time) (out string) {
-	if !in.After(time.Unix(0, 0).UTC()) {
+	if in.After(time.Unix(0, 0).UTC()) {
 		out = in.String()
 	}
 	return

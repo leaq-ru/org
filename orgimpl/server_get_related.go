@@ -22,25 +22,32 @@ func (s *server) GetRelated(ctx context.Context, req *pbOrg.GetRelatedRequest) (
 		limit = req.GetOpts().GetLimit()
 	}
 
-	areaID, err := primitive.ObjectIDFromHex(req.GetAreaId())
-	if err != nil {
-		err = safeerr.InvalidParam("areaId")
-		return
+	var ids []org.ID
+	areaID, e := primitive.ObjectIDFromHex(req.GetAreaId())
+	if e == nil {
+		ids = append(ids, org.ID{
+			Val:  areaID,
+			Kind: org.IDKind_areaID,
+		})
 	}
 
-	okvedID, err := primitive.ObjectIDFromHex(req.GetOkvedId())
-	if err != nil {
-		err = safeerr.InvalidParam("okvedId")
-		return
+	okvedID, e := primitive.ObjectIDFromHex(req.GetOkvedId())
+	if e == nil {
+		ids = append(ids, org.ID{
+			Val:  okvedID,
+			Kind: org.IDKind_okvedID,
+		})
 	}
 
-	orgs, err := s.orgModel.GetByIDs(ctx, []org.ID{{
-		Val:  areaID,
-		Kind: org.IDKind_areaID,
-	}, {
-		Val:  okvedID,
-		Kind: org.IDKind_okvedID,
-	}}, req.GetOpts().GetSkip(), limit)
+	excludeOrgID, e := primitive.ObjectIDFromHex(req.GetExcludeOrgId())
+	if e == nil {
+		ids = append(ids, org.ID{
+			Val:  excludeOrgID,
+			Kind: org.IDKind_excludeOrgID,
+		})
+	}
+
+	orgs, err := s.orgModel.GetByIDs(ctx, ids, req.GetOpts().GetSkip(), limit)
 	if err != nil {
 		s.logger.Error().Err(err).Send()
 		err = safeerr.InternalServerError

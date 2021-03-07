@@ -60,6 +60,17 @@ func createIndex(db *mongo.Database) (err error) {
 			Key:   "_id",
 			Value: -1,
 		}},
+	}, {
+		Keys: bson.D{{
+			Key:   "a",
+			Value: 1,
+		}, {
+			Key:   "o",
+			Value: 1,
+		}, {
+			Key:   "_id",
+			Value: -1,
+		}},
 	}})
 	if err != nil {
 		return

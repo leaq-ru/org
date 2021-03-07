@@ -38,7 +38,7 @@ func (s *server) GetBySlug(ctx context.Context, req *pbOrg.GetBySlugRequest) (re
 		return
 	}
 
-	res, err = s.fetchOrgWithBranches(ctx, orgs)
+	res, err = s.fetchOrgWithBranchesAndRelated(ctx, orgs)
 	if err != nil {
 		s.logger.Error().Err(err).Send()
 		err = safeerr.InternalServerError

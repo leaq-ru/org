@@ -16,6 +16,7 @@ const (
 	IDKind_metroID
 	IDKind_okvedID
 	IDKind_locationID
+	IDKind_excludeOrgID
 )
 
 type ID struct {
@@ -34,20 +35,22 @@ func (m Model) GetByIDs(
 ) {
 	query := bson.M{}
 	for _, id := range ids {
-		var key string
 		switch id.Kind {
 		case IDKind_areaID:
-			key = "a"
+			query["a"] = id.Val
 		case IDKind_managerID:
-			key = "mi"
+			query["mi"] = id.Val
 		case IDKind_metroID:
-			key = "m.id"
+			query["m.id"] = id.Val
 		case IDKind_okvedID:
-			key = "o"
+			query["o"] = id.Val
 		case IDKind_locationID:
-			key = "l"
+			query["l"] = id.Val
+		case IDKind_excludeOrgID:
+			query["_id"] = bson.M{
+				"$ne": id.Val,
+			}
 		}
-		query[key] = id.Val
 	}
 
 	cur, err := m.coll.Find(ctx, query, options.Find().
