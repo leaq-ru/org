@@ -295,9 +295,9 @@ func (s *server) fetchOrgWithBranchesAndRelated(
 					return
 				}
 
-				ar, ok := mArea[val.ID]
+				ar, ok := mArea[val.AreaID]
 				if !ok {
-					err = errors.New("expected to get area from map, but nothing found val.ID=" + val.ID.Hex())
+					err = errors.New("expected to get area from map, but nothing found val.AreaID=" + val.AreaID.Hex())
 					return
 				}
 
