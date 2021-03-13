@@ -27,6 +27,7 @@ type ID struct {
 func (m Model) GetByIDs(
 	ctx context.Context,
 	ids []ID,
+	withBranches bool,
 	skip,
 	limit uint32,
 ) (
@@ -51,6 +52,9 @@ func (m Model) GetByIDs(
 				"$ne": id.Val,
 			}
 		}
+	}
+	if !withBranches {
+		query["bk"] = BranchKind_main
 	}
 
 	cur, err := m.coll.Find(ctx, query, options.Find().

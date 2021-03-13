@@ -31,7 +31,7 @@ func (s *server) GetByLocationId(ctx context.Context, req *pbOrg.GetByLocationId
 	orgs, err := s.orgModel.GetByIDs(ctx, []org.ID{{
 		Val:  id,
 		Kind: org.IDKind_locationID,
-	}}, req.GetOpts().GetSkip(), limit)
+	}}, false, req.GetOpts().GetSkip(), limit)
 	if err != nil {
 		s.logger.Error().Err(err).Send()
 		err = safeerr.InternalServerError

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	safeerr "github.com/nnqq/scr-lib-safeerr"
+	"github.com/nnqq/scr-org/org"
 	pbOrg "github.com/nnqq/scr-proto/codegen/go/org"
 	"go.mongodb.org/mongo-driver/mongo"
 	"strconv"
@@ -36,6 +37,12 @@ func (s *server) GetBySlug(ctx context.Context, req *pbOrg.GetBySlugRequest) (re
 			err = safeerr.InternalServerError
 		}
 		return
+	}
+	for _, o := range orgs {
+		if o.BranchKind == org.BranchKind_branch && o.Slug == req.GetSlug() {
+			err = safeerr.NotFound("org")
+			return
+		}
 	}
 
 	res, err = s.fetchOrgWithBranchesAndRelated(ctx, orgs)

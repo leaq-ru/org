@@ -20,7 +20,7 @@ func (s *server) Get(ctx context.Context, req *org.GetRequest) (res *org.GetResp
 		limit = req.GetOpts().GetLimit()
 	}
 
-	orgs, err := s.orgModel.GetByIDs(ctx, nil, req.GetOpts().GetSkip(), limit)
+	orgs, err := s.orgModel.GetByIDs(ctx, nil, false, req.GetOpts().GetSkip(), limit)
 	if err != nil {
 		s.logger.Error().Err(err).Send()
 		err = safeerr.InternalServerError

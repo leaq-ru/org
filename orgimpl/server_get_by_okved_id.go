@@ -31,7 +31,7 @@ func (s *server) GetByOkvedId(ctx context.Context, req *pbOrg.GetByOkvedIdReques
 	orgs, err := s.orgModel.GetByIDs(ctx, []org.ID{{
 		Val:  id,
 		Kind: org.IDKind_okvedID,
-	}}, req.GetOpts().GetSkip(), limit)
+	}}, false, req.GetOpts().GetSkip(), limit)
 	if err != nil {
 		s.logger.Error().Err(err).Send()
 		err = safeerr.InternalServerError

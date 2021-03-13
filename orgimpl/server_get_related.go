@@ -47,7 +47,7 @@ func (s *server) GetRelated(ctx context.Context, req *pbOrg.GetRelatedRequest) (
 		})
 	}
 
-	orgs, err := s.orgModel.GetByIDs(ctx, ids, req.GetOpts().GetSkip(), limit)
+	orgs, err := s.orgModel.GetByIDs(ctx, ids, false, req.GetOpts().GetSkip(), limit)
 	if err != nil {
 		s.logger.Error().Err(err).Send()
 		err = safeerr.InternalServerError

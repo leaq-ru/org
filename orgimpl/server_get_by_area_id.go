@@ -31,7 +31,7 @@ func (s *server) GetByAreaId(ctx context.Context, req *pbOrg.GetByAreaIdRequest)
 	orgs, err := s.orgModel.GetByIDs(ctx, []org.ID{{
 		Val:  id,
 		Kind: org.IDKind_areaID,
-	}}, req.GetOpts().GetSkip(), limit)
+	}}, false, req.GetOpts().GetSkip(), limit)
 	if err != nil {
 		s.logger.Error().Err(err).Send()
 		err = safeerr.InternalServerError
