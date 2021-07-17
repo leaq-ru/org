@@ -1,7 +1,7 @@
 package okved
 
 import (
-	"github.com/nnqq/scr-org/mongo"
+	"github.com/leaq-ru/org/mongo"
 	md "go.mongodb.org/mongo-driver/mongo"
 )
 

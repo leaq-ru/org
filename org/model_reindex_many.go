@@ -3,7 +3,7 @@ package org
 import (
 	"context"
 	"github.com/gosimple/slug"
-	"github.com/nnqq/scr-org/dadata"
+	"github.com/leaq-ru/org/dadata"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

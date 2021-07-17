@@ -3,8 +3,8 @@ package orgimpl
 import (
 	"context"
 	"errors"
-	safeerr "github.com/nnqq/scr-lib-safeerr"
-	pbOrg "github.com/nnqq/scr-proto/codegen/go/org"
+	safeerr "github.com/leaq-ru/lib-safeerr"
+	pbOrg "github.com/leaq-ru/proto/codegen/go/org"
 	"go.mongodb.org/mongo-driver/mongo"
 	"time"
 )

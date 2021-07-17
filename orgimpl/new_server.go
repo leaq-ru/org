@@ -1,12 +1,12 @@
 package orgimpl
 
 import (
-	"github.com/nnqq/scr-org/area"
-	"github.com/nnqq/scr-org/location"
-	"github.com/nnqq/scr-org/manager"
-	"github.com/nnqq/scr-org/metro"
-	"github.com/nnqq/scr-org/okved"
-	"github.com/nnqq/scr-org/org"
+	"github.com/leaq-ru/org/area"
+	"github.com/leaq-ru/org/location"
+	"github.com/leaq-ru/org/manager"
+	"github.com/leaq-ru/org/metro"
+	"github.com/leaq-ru/org/okved"
+	"github.com/leaq-ru/org/org"
 	"github.com/rs/zerolog"
 )
 

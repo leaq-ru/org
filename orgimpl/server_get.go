@@ -2,8 +2,8 @@ package orgimpl
 
 import (
 	"context"
-	safeerr "github.com/nnqq/scr-lib-safeerr"
-	"github.com/nnqq/scr-proto/codegen/go/org"
+	safeerr "github.com/leaq-ru/lib-safeerr"
+	"github.com/leaq-ru/proto/codegen/go/org"
 	"time"
 )
 

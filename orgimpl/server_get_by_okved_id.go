@@ -2,9 +2,9 @@ package orgimpl
 
 import (
 	"context"
-	safeerr "github.com/nnqq/scr-lib-safeerr"
-	"github.com/nnqq/scr-org/org"
-	pbOrg "github.com/nnqq/scr-proto/codegen/go/org"
+	safeerr "github.com/leaq-ru/lib-safeerr"
+	"github.com/leaq-ru/org/org"
+	pbOrg "github.com/leaq-ru/proto/codegen/go/org"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
